@@ -1,0 +1,26 @@
+#!/bin/bash
+# keep an eye on quota in realtime and alert the user if they have gone over quota
+# determine which cluster
+GPFSHOME=M`hostname | cut -c2`Home
+#echo $GPFSHOME
+while(true)
+do
+    OVERQUOTA_STATUS=`/usr/lpp/mmfs/bin/mmlsquota -j User_$USER $GPFSHOME --block-size auto | grep $GPFSHOME | awk '{ print $7}'`
+    case $OVERQUOTA_STATUS in
+    none)
+        # echo OK
+        ;;
+    *days)
+        # echo not ok
+        kdialog --sorry "Your Home directory is overquota! If you do not fix the situation you will lose the ability to log in to the MASSIVE desktop in $OVERQUOTA_STATUS. Please move data from your home space to your project space.\n\n Visit https://www.massive.org.au/userguide/getting-started/file-system-and-disk-quotas for more information on managing quotas. \n\n Also you can select Applications > MASSIVE > MASSIVE Destop Utilities > Check Diskspace Usage of Home Dir  to find where space is being consumed in your home folder"
+        ;;
+     expired)
+        kdlialog --error "Your Home directory is overquota! Please move data from your home space to your project space.\n\n Visit https://www.massive.org.au/userguide/getting-started/file-system-and-disk-quotas for more information on managing quotas \n\n Also you can select Applications > MASSIVE > MASSIVE Destop Utilities > Check Diskspace Usage of Home Dir  to find where space is being consumed in your home folder" 
+        ;;
+     *)
+        echo "Error reading quota"
+        ;;
+     esac
+
+    sleep 600
+done
