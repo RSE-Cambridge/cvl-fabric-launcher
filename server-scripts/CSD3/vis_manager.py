@@ -4,11 +4,14 @@ import datetime
 import os
 import time
 import socket
-from subprocess import call
 import re
+from subprocess import call
 
 
 def listAll(args):
+    """Lists all the running jobs from a user. 
+    (This should target the vis_ pertition) """
+
     partition = args.partition
     username = os.path.expandvars('$USER')
     total_seconds = 0
@@ -18,12 +21,7 @@ def listAll(args):
         if not 'JOBID TIME_LEFT' in line:
             jobidstring = line.split(' ')[0]
             timestring = line.replace("-", ":").split(' ')[1]
-            # print line
-            # print timestring,
-            # print len (timestring) # note the string is in the format 1:00:50:16/n
-            # for i in range (0,len (timestring)):
-            #     print str(i) + " " + timestring[i]
-            if len(timestring) >= 10:
+           if len(timestring) >= 10:
                 pt = datetime.datetime.strptime(timestring, '%d:%H:%M:%S\n')
                 total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600 + pt.day * 86400
             elif len(timestring) >= 7:
@@ -40,6 +38,8 @@ def listAll(args):
 
 
 def newSession(args):
+    """ Create a new vis_ session"""
+
     partition = args.partition
     qos = ""
     vncdir = os.path.expandvars('$HOME/.vnc/')
@@ -92,21 +92,6 @@ def newSession(args):
                "--time=" + str(args.hours) + ":00:00", "--nodes=" + str(args.nodes), \
                "--output=" + slurm_out, "--error=" + slurm_out, "--mem=192000", sbatch_vis_session]
 
-    # additional options
-    # if account is listed in the beamline reservation use that reservation
-    reservationname="beamline"
-    reservation_cmd=["/usr/local/software/slurm/current/bin/scontrol","show","--oneliner","reservation=" + reservationname]
-    p = subprocess.Popen(reservation_cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    line =  p.stdout.readline()
-    if "not found" not in line:
-	reservation_dict = dict( (n,v) for n,v in (a.split('=') for a in line.split() ) )
-	retval = p.wait()
-	if partition == "m1-vis-c6" and args.project in reservation_dict['Accounts']:
-	   # print "account found in reservation - inserting reservationname before sbatch script"
-	    sbatch_vis_session = cmd.pop()
-            cmd.append("--reservation=" + reservationname)
-            cmd.append(sbatch_vis_session)
-
     print cmd
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
@@ -118,6 +103,8 @@ def newSession(args):
 
 
 def isRunning(args):
+    """Check if the vis session is running"""
+
     cmd = ["/usr/local/software/slurm/current/bin/squeue", "-j", args.sessionid, "-o", "%i %t %R"]
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
@@ -140,6 +127,8 @@ def isRunning(args):
 
 
 def execHost(args):
+    """ Return the host name of the node to run the vis session"""
+
     cmd = ["/usr/local/software/slurm/current/bin/squeue", "-j" + args.sessionid, "-o", "%N"]
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
@@ -204,12 +193,6 @@ def showStart(args):
 
 def sanityCheck(args):
     print "Running with launcher version: " + args.launcherversion
-
-
-#    print "INFO: Tuesday 12th Mar - we are currently experiencing issues with the scheduler. Desktop sessions may fail to start. We are working on the issue now"
-    # print "INFO: m2-login1 is experiencing issues. If you are unable to login in using m2-login1 please use m2-login2 instead"
-# if int(args.launcherversion) < 20150418:
-#      print "INFO: " + args.launcherversion
 
 def main():
     import argparse
