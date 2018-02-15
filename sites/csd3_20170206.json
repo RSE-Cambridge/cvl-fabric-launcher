@@ -1,0 +1,1020 @@
+[
+    [
+        "CSD3 GPU",
+        "CSD3 Skylake"
+    ],
+    {
+        "CSD3 GPU": {
+            "__module__": "siteConfig",
+            "webDavRemotePort": {
+                "regex": [
+                    "^(?P<remoteWebDavPortNumber>[0-9]+)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} /usr/local/desktop/get_ephemeral_port.py\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "siteRanges": {
+                "jobParams_mem": [
+                    1,
+                    1024
+                ],
+                "jobParams_ppn": [
+                    1,
+                    12
+                ],
+                "jobParams_nodes": [
+                    1,
+                    10
+                ],
+                "jobParams_hours": [
+                    1,
+                    336
+                ]
+            },
+            "displayStrings": {
+                "__module__": "siteConfig",
+                "onFirstLoginFailure": "An unknown error occured. Please contact your site help desk.",
+                "persistentMessageStop": "Stop the desktop",
+                "selectProjectMessage": "You don't appear to be a member of the project {project}.\n\nPlease select from one of the following:",
+                "createNewKeyDialogNewPassphraseEmptyForbidden": "Sorry, empty passphrases are forbidden.",
+                "newPassphraseTitle": "Please enter a new passphrase",
+                "createNewKeyDialogNewPassphraseMismatch": "Passphrases don't match!",
+                "qdelQueuedJobQdel": "Delete the job",
+                "reconnectMessage": "An Existing Desktop was found. It has {timestring} remaining. Would you like to reconnect or kill it and start a new desktop?",
+                "helpEmailAddress": "help@massive.org.au",
+                "temporaryKey": "\nWould you like to use the launchers old behaviour (entering a password every time you start a new desktop) or try the new behaviour (creating an ssh key pair and entering a passphrase the first time you use the launcher after reboot.)\n\nPasswords are recomended if this is a shared user account.\n\nSSH Keys are recommended if you are the only person who uses this account.\n\nThis option can be changed from the Identity menu.\n",
+                "persistentMessagePersist": "Leave it running",
+                "newPassphraseEmptyForbidden": "Sorry, empty passphrases are forbidden.\nIt looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher.",
+                "temporaryKeyNo": "Use my SSH Key",
+                "newPassphrase": "It looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher.",
+                "qdelQueuedJobNOOP": "Leave it in the queue (I'll reconnect later)",
+                "qdelQueuedJob": "It looks like you've been waiting for a job to start.\nDo you want me to delete the job or leave it in the queue so you can reconnect later?\n",
+                "temporaryKeyYes": "Use my password every time",
+                "passphrasePromptIncorrect": "\nSorry, that passphrase was incorrect.\nPlease enter the passphrase for you SSH Key\nIf you have forgoten the passphrase for you key, you may need to delete it and create a new key.\nYou can find this option under the Identity menu.\n",
+                "newPassphraseTooShort": "Sorry, the passphrase must be at least 6 characters.\nIt looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher.",
+                "networkError": "It looks like a network error has occured. You may be able to resume your work by logging in again.",
+                "__class__": "sshKeyDistDisplayStrings",
+                "reconnectMessageYes": "Reconnect",
+                "passphrasePromptIncorrectl": "Sorry, that passphrase was incorrect. Please enter the passphrase for your ssh key",
+                "passwdPrompt": "Please enter the password for your MASSIVE account.",
+                "passphrasePrompt": "Please enter the passphrase for your SSH key",
+                "createNewKeyDialogNewPassphraseTooShort": "Passphrase is too short.",
+                "passwdPromptIncorrect": "Sorry, that password was incorrect.\nPlease enter the password for your MASSIVE account.",
+                "reconnectMessageNo": "New desktop",
+                "persistentMessage": "Would you like to leave your current session running so that you can reconnect later?\nIt has {timestring} remaining.",
+                "newPassphraseMismatch": "Sorry, the two passphrases you entered don't match.\nIt looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher."
+            },
+            "agent": {
+                "regex": [
+                    "agent_hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -oStrictHostKeyChecking=yes -l {username} {loginHost} \"/usr/bin/ssh -A {execHost} \\\"echo agent_hello; bash \\\"\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "local",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": true,
+                "loop": false
+            },
+            "vncDisplay": {
+                "regex": [
+                    "^(?P<vncDisplay>:[0-9]+)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py vncport -s {sessionid}",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "authURL": null,
+            "dbusSessionBusAddress": {
+                "regex": [
+                    "^DBUS_SESSION_BUS_ADDRESS=(?P<dbusSessionBusAddress>.*)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"echo DBUS_SESSION_BUS_ADDRESS=dummy_dbus_session_bus_address\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "oauthclientpasswd": null,
+            "execHost": {
+                "regex": [
+                    "(?P<execHost>\\S+)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py exechost -s {sessionid}\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "webDavWindowID": {
+                "regex": [
+                    "^DummyWebDavWindowID=(?P<webDavWindowID>.*)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"echo DummyWebDavWindowID=-1\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "showStart": {
+                "regex": [
+                    "(?P<estimatedStart>.*)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py showstart -s {sessionid}",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "setDisplayResolution": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "sitetz": "Australia/Melbourne",
+            "messageRegexs": [
+                {
+                    "pattern": "^INFO:(?P<info>.*(?:\n|\r\n?))",
+                    "__class__": "__regex__"
+                },
+                {
+                    "pattern": "^WARN:(?P<warn>.*(?:\n|\r\n?))",
+                    "__class__": "__regex__"
+                },
+                {
+                    "pattern": "^ERROR:(?P<error>.*(?:\n|\r\n?))",
+                    "__class__": "__regex__"
+                }
+            ],
+            "webDavCloseWindow": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} 'DISPLAY={vncDisplay} /usr/local/desktop/close_webdav_window.sh webdav://{localUsername}@localhost:{remoteWebDavPortNumber}/{homeDirectoryWebDavShareName}'\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "__class__": "siteConfig",
+            "webDavMount": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "echo Mounting WebDAV...",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "oauthclient": null,
+            "displayWebDavInfoDialogOnRemoteDesktop": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} 'echo -e \\\"You can access your local home directory in Konqueror with the URL:%sbr%s\\nwebdav://{localUsername}@localhost:{remoteWebDavPortNumber}/{homeDirectoryWebDavShareName}%sbr%s\\nYour one-time password is {vncPasswd}\\\" > ~/.vnc/\\$(hostname){vncDisplay}-webdav.txt;'\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "username": null,
+            "onFirstLogin": null,
+            "stop": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py stop -s {sessionid}",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "startServer": {
+                "regex": [
+                    "(?P<sessionid>[0-9]+)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "'/usr/local/desktop/vis_manager.py newsession -P pascal -p {project} -t {hours} -n {nodes} -r {resolution}'",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "listReservations": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "running": {
+                "regex": [
+                    "true"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py isrunning -s {sessionid}\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "loginHost": "login-gpu.cam.ac.uk",
+            "webDavTunnel": {
+                "regex": [
+                    "tunnel_hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -oStrictHostKeyChecking=no -oExitOnForwardFailure=yes -R {intermediateWebDavPortNumber}:localhost:{localWebDavPortNumber} -l {username} {loginHost} \"ssh -R {remoteWebDavPortNumber}:localhost:{intermediateWebDavPortNumber} {execHost} 'echo tunnel_hello; bash'\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "local",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": true,
+                "loop": false
+            },
+            "webDavIntermediatePort": {
+                "regex": [
+                    "^(?P<intermediateWebDavPortNumber>[0-9]+)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/get_ephemeral_port.py\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "otp": {
+                "regex": [
+                    "(?P<vncPasswd>[0-9]+)\\s*$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -l {username} {loginHost} \"/usr/bin/ssh -A {execHost} \\\"module load turbovnc; vncpasswd -o -display {execHost}:1\\\"\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "deleteReservation": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "provision": null,
+            "runSanityCheck": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "'/usr/local/desktop/vis_manager.py sanitycheck -l {launcher_version_number}'",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "stopForRestart": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py stop -s {sessionid} --wait 4",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "tunnel": {
+                "regex": [
+                    "tunnel_hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -oStrictHostKeyChecking=yes -L {localPortNumber}:{execHost}:{remotePortNumber} -l {username} {loginHost} \"echo tunnel_hello; bash\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "local",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": true,
+                "loop": false
+            },
+            "instanceFlavour": null,
+            "relabel": {},
+            "imageid": null,
+            "getProjects": {
+                "regex": [
+                    "(?P<group>.*)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py getprojects \"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "webDavUnmount": {
+                "regex": [
+                    "hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "echo hello",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "authorizedKeysFile": null,
+            "visibility": {
+                "jobParams_nodes": true,
+                "projectPanel": true,
+                "resourcePanel": true,
+                "debugCheckBoxPanel": "Advanced",
+                "resolutionPanel": "Advanced",
+                "label_hours": true,
+                "cipherPanel": "Advanced",
+                "advancedCheckBoxPanel": true,
+                "jobParams_hours": true,
+                "label_nodes": true,
+                "usernamePanel": true
+            },
+            "defaults": {
+                "jobParams_mem": 13,
+                "jobParams_ppn": 3,
+                "jobParams_nodes": 1,
+                "jobParams_hours": 4
+            },
+            "createReservation": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "onConnectScript": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "directConnect": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "openWebDavShareInRemoteFileBrowser": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} 'DISPLAY={vncDisplay} /usr/bin/konqueror webdav://{localUsername}:{vncPasswd}@localhost:{remoteWebDavPortNumber}/{homeDirectoryWebDavShareName}'\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "listAll": {
+                "regex": [
+                    "(?P<sessionid>[0-9]+) (?P<remainingWalltime>.*)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py listall -P skylake\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            }
+        },
+        "CSD3 Skylake": {
+            "__module__": "siteConfig",
+            "webDavRemotePort": {
+                "regex": [
+                    "^(?P<remoteWebDavPortNumber>[0-9]+)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} /usr/local/desktop/get_ephemeral_port.py\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "siteRanges": {
+                "jobParams_mem": [
+                    1,
+                    1024
+                ],
+                "jobParams_ppn": [
+                    1,
+                    12
+                ],
+                "jobParams_nodes": [
+                    1,
+                    10
+                ],
+                "jobParams_hours": [
+                    1,
+                    336
+                ]
+            },
+            "displayStrings": {
+                "__module__": "siteConfig",
+                "onFirstLoginFailure": "An unknown error occured. Please contact your site help desk.",
+                "persistentMessageStop": "Stop the desktop",
+                "selectProjectMessage": "You don't appear to be a member of the project {project}.\n\nPlease select from one of the following:",
+                "createNewKeyDialogNewPassphraseEmptyForbidden": "Sorry, empty passphrases are forbidden.",
+                "newPassphraseTitle": "Please enter a new passphrase",
+                "createNewKeyDialogNewPassphraseMismatch": "Passphrases don't match!",
+                "qdelQueuedJobQdel": "Delete the job",
+                "reconnectMessage": "An Existing Desktop was found. It has {timestring} remaining. Would you like to reconnect or kill it and start a new desktop?",
+                "helpEmailAddress": "help@massive.org.au",
+                "temporaryKey": "\nWould you like to use the launchers old behaviour (entering a password every time you start a new desktop) or try the new behaviour (creating an ssh key pair and entering a passphrase the first time you use the launcher after reboot.)\n\nPasswords are recomended if this is a shared user account.\n\nSSH Keys are recommended if you are the only person who uses this account.\n\nThis option can be changed from the Identity menu.\n",
+                "persistentMessagePersist": "Leave it running",
+                "newPassphraseEmptyForbidden": "Sorry, empty passphrases are forbidden.\nIt looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher.",
+                "temporaryKeyNo": "Use my SSH Key",
+                "newPassphrase": "It looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher.",
+                "qdelQueuedJobNOOP": "Leave it in the queue (I'll reconnect later)",
+                "qdelQueuedJob": "It looks like you've been waiting for a job to start.\nDo you want me to delete the job or leave it in the queue so you can reconnect later?\n",
+                "temporaryKeyYes": "Use my password every time",
+                "passphrasePromptIncorrect": "\nSorry, that passphrase was incorrect.\nPlease enter the passphrase for you SSH Key\nIf you have forgoten the passphrase for you key, you may need to delete it and create a new key.\nYou can find this option under the Identity menu.\n",
+                "newPassphraseTooShort": "Sorry, the passphrase must be at least 6 characters.\nIt looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher.",
+                "networkError": "It looks like a network error has occured. You may be able to resume your work by logging in again.",
+                "__class__": "sshKeyDistDisplayStrings",
+                "reconnectMessageYes": "Reconnect",
+                "passphrasePromptIncorrectl": "Sorry, that passphrase was incorrect. Please enter the passphrase for your ssh key",
+                "passwdPrompt": "Please enter the password for your MASSIVE account.",
+                "passphrasePrompt": "Please enter the passphrase for your SSH key",
+                "createNewKeyDialogNewPassphraseTooShort": "Passphrase is too short.",
+                "passwdPromptIncorrect": "Sorry, that password was incorrect.\nPlease enter the password for your MASSIVE account.",
+                "reconnectMessageNo": "New desktop",
+                "persistentMessage": "Would you like to leave your current session running so that you can reconnect later?\nIt has {timestring} remaining.",
+                "newPassphraseMismatch": "Sorry, the two passphrases you entered don't match.\nIt looks like this is the first time you're logging in to MASSIVE with this version of the launcher.\nTo make logging in faster and more secure, the launcher will generate a local\npassphrase protected key on your computer which is used to\nauthenticate you and set up your MASSIVE desktop.\n\nPlease enter a new passphrase (twice to avoid typos) to protect your local key. \nAfter you've done this, your passphrase will be the primary method of\nauthentication for the launcher."
+            },
+            "agent": {
+                "regex": [
+                    "agent_hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -oStrictHostKeyChecking=yes -l {username} {loginHost} \"/usr/bin/ssh -A {execHost} \\\"echo agent_hello; bash \\\"\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "local",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": true,
+                "loop": false
+            },
+            "vncDisplay": {
+                "regex": [
+                    "^(?P<vncDisplay>:[0-9]+)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py vncport -s {sessionid}",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "authURL": null,
+            "dbusSessionBusAddress": {
+                "regex": [
+                    "^DBUS_SESSION_BUS_ADDRESS=(?P<dbusSessionBusAddress>.*)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"echo DBUS_SESSION_BUS_ADDRESS=dummy_dbus_session_bus_address\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "oauthclientpasswd": null,
+            "execHost": {
+                "regex": [
+                    "(?P<execHost>\\S+)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py exechost -s {sessionid}\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "webDavWindowID": {
+                "regex": [
+                    "^DummyWebDavWindowID=(?P<webDavWindowID>.*)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"echo DummyWebDavWindowID=-1\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "showStart": {
+                "regex": [
+                    "(?P<estimatedStart>.*)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py showstart -s {sessionid}",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "setDisplayResolution": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "sitetz": "Australia/Melbourne",
+            "messageRegexs": [
+                {
+                    "pattern": "^INFO:(?P<info>.*(?:\n|\r\n?))",
+                    "__class__": "__regex__"
+                },
+                {
+                    "pattern": "^WARN:(?P<warn>.*(?:\n|\r\n?))",
+                    "__class__": "__regex__"
+                },
+                {
+                    "pattern": "^ERROR:(?P<error>.*(?:\n|\r\n?))",
+                    "__class__": "__regex__"
+                }
+            ],
+            "webDavCloseWindow": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} 'DISPLAY={vncDisplay} /usr/local/desktop/close_webdav_window.sh webdav://{localUsername}@localhost:{remoteWebDavPortNumber}/{homeDirectoryWebDavShareName}'\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "__class__": "siteConfig",
+            "webDavMount": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "echo Mounting WebDAV...",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "oauthclient": null,
+            "displayWebDavInfoDialogOnRemoteDesktop": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} 'echo -e \\\"You can access your local home directory in Konqueror with the URL:%sbr%s\\nwebdav://{localUsername}@localhost:{remoteWebDavPortNumber}/{homeDirectoryWebDavShareName}%sbr%s\\nYour one-time password is {vncPasswd}\\\" > ~/.vnc/\\$(hostname){vncDisplay}-webdav.txt;'\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "username": null,
+            "onFirstLogin": null,
+            "stop": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py stop -s {sessionid}",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "startServer": {
+                "regex": [
+                    "(?P<sessionid>[0-9]+)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "'/usr/local/desktop/vis_manager.py newsession -P skylake -p {project} -t {hours} -n {nodes} -r {resolution} '",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "listReservations": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "running": {
+                "regex": [
+                    "true"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py isrunning -s {sessionid}\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "loginHost": "login-e-1.hpc.cam.ac.uk",
+            "webDavTunnel": {
+                "regex": [
+                    "tunnel_hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -oStrictHostKeyChecking=no -oExitOnForwardFailure=yes -R {intermediateWebDavPortNumber}:localhost:{localWebDavPortNumber} -l {username} {loginHost} \"ssh -R {remoteWebDavPortNumber}:localhost:{intermediateWebDavPortNumber} {execHost} 'echo tunnel_hello; bash'\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "local",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": true,
+                "loop": false
+            },
+            "webDavIntermediatePort": {
+                "regex": [
+                    "^(?P<intermediateWebDavPortNumber>[0-9]+)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/get_ephemeral_port.py\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "otp": {
+                "regex": [
+                    "(?P<vncPasswd>[0-9]+)\\s*$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -l {username} {loginHost} \"/usr/bin/ssh {execHost} \\\"/usr/local/desktop/get_otp.sh\\\"\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "deleteReservation": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "provision": null,
+            "runSanityCheck": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "'/usr/local/desktop/vis_manager.py sanitycheck -l {launcher_version_number}'",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "stopForRestart": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "/usr/local/desktop/vis_manager.py stop -s {sessionid} --wait 4",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "tunnel": {
+                "regex": [
+                    "tunnel_hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "{sshBinary} -A -t -t -oStrictHostKeyChecking=yes -L {localPortNumber}:{execHost}:{remotePortNumber} -l {username} {loginHost} \"echo tunnel_hello; bash\"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "local",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": true,
+                "loop": false
+            },
+            "instanceFlavour": null,
+            "relabel": {},
+            "imageid": null,
+            "getProjects": {
+                "regex": [
+                    "(?P<group>.*)"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py getprojects \"",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "webDavUnmount": {
+                "regex": [
+                    "hello"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "echo hello",
+                "requireMatch": true,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "authorizedKeysFile": null,
+            "visibility": {
+                "jobParams_nodes": true,
+                "projectPanel": true,
+                "resourcePanel": true,
+                "debugCheckBoxPanel": "Advanced",
+                "resolutionPanel": "Advanced",
+                "label_hours": true,
+                "cipherPanel": "Advanced",
+                "advancedCheckBoxPanel": true,
+                "jobParams_hours": true,
+                "label_nodes": true,
+                "usernamePanel": true
+            },
+            "defaults": {
+                "jobParams_mem": 120,
+                "jobParams_ppn": 12,
+                "jobParams_nodes": 1,
+                "jobParams_hours": 4
+            },
+            "createReservation": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "onConnectScript": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": false,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "directConnect": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": null,
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "openWebDavShareInRemoteFileBrowser": {
+                "regex": [
+                    null
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/bin/ssh {execHost} 'DISPLAY={vncDisplay} /usr/bin/konqueror webdav://{localUsername}:{vncPasswd}@localhost:{remoteWebDavPortNumber}/{homeDirectoryWebDavShareName}'\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            },
+            "listAll": {
+                "regex": [
+                    "(?P<sessionid>[0-9]+) (?P<remainingWalltime>.*)$"
+                ],
+                "__module__": "siteConfig",
+                "cmd": "\"/usr/local/desktop/vis_manager.py listall\"",
+                "requireMatch": false,
+                "__class__": "cmdRegEx",
+                "host": "login",
+                "failFatal": true,
+                "formatFatal": false,
+                "async": false,
+                "loop": false
+            }
+        }
+    }
+]

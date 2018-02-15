@@ -9,9 +9,7 @@ import re
 
 
 def listAll(args):
-    submithost = socket.gethostname()
-    mX = submithost[:2]
-    partition = mX + "-vis-c6"
+    partition = args.partition
     username = os.path.expandvars('$USER')
     total_seconds = 0
     cmd = ["/usr/local/software/slurm/current/bin/squeue", "--user=" + username, "--partition=" + partition, "-o", "%i %L"]
@@ -42,10 +40,8 @@ def listAll(args):
 
 
 def newSession(args):
-    submithost = socket.gethostname()
-    mX = submithost[:2]
-    partition = mX + "-vis-c6"
-    qos = "vis_" + mX
+    partition = args.partition
+    qos = ""
     vncdir = os.path.expandvars('$HOME/.vnc/')
     cmd = ["mkdir", "-p", vncdir]
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -86,7 +82,7 @@ def newSession(args):
 
     # set up the cmmand based on flavour requested
     if args.flavour == "any":
-        cmd = ["/usr/local/software/slurm/current/bin/sbatch", "--qos=" + qos, "--partition=" + partition,
+        cmd = ["/usr/local/software/slurm/current/bin/sbatch", "--reservation=skylake-test", "--partition=" + partition,
                "--account=" + args.project, \
                "--time=" + str(args.hours) + ":00:00", "--nodes=" + str(args.nodes), \
                "--output=" + slurm_out, "--error=" + slurm_out, sbatch_vis_session]
@@ -102,15 +98,16 @@ def newSession(args):
     reservation_cmd=["/usr/local/software/slurm/current/bin/scontrol","show","--oneliner","reservation=" + reservationname]
     p = subprocess.Popen(reservation_cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     line =  p.stdout.readline()
-    reservation_dict = dict( (n,v) for n,v in (a.split('=') for a in line.split() ) )
-    retval = p.wait()
-    if partition == "m1-vis-c6" and args.project in reservation_dict['Accounts']:
-        # print "account found in reservation - inserting reservationname before sbatch script"
-        sbatch_vis_session = cmd.pop()
-        cmd.append("--reservation=" + reservationname)
-        cmd.append(sbatch_vis_session)
+    if "not found" not in line:
+	reservation_dict = dict( (n,v) for n,v in (a.split('=') for a in line.split() ) )
+	retval = p.wait()
+	if partition == "m1-vis-c6" and args.project in reservation_dict['Accounts']:
+	   # print "account found in reservation - inserting reservationname before sbatch script"
+	    sbatch_vis_session = cmd.pop()
+            cmd.append("--reservation=" + reservationname)
+            cmd.append(sbatch_vis_session)
 
-    # print cmd
+    print cmd
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         if 'Submitted batch job' in line:
@@ -149,8 +146,9 @@ def execHost(args):
         if 'NODELIST' in line:
             continue
         nodelist = line.translate(None, '[]')
-        firstnode = re.split(r'-|,', nodelist)[0]
-        print firstnode
+	print nodelist
+        #firstnode = re.split(r'-|,', nodelist)[0]
+        #print firstnode
     retval = p.wait()
 
 
@@ -222,10 +220,12 @@ def main():
     listallSP = subparser.add_parser('listall',
                                      help='lists all the users running vis jobs in the format of "sessionid timeleft (seconds)"')
     listallSP.set_defaults(func=listAll)
+    listallSP.add_argument("-P", "--partition", required=True, help='spesify the partition to list all running jobs from.')
 
     newsessionSP = subparser.add_parser('newsession',
                                         help='create a new desktop session and return an id or error message')
     newsessionSP.set_defaults(func=newSession)
+    newsessionSP.add_argument("-P", "--partition", required=True, help='spesify the partition to list all running jobs from.')
     newsessionSP.add_argument("-p", "--project", required=True,
                               help='the project allocation to run the session against')
     newsessionSP.add_argument("-t", "--hours", type=int, required=True,
