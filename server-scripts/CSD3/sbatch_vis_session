@@ -1,19 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=desktop
-##SBATCH --reservation=<reservation_name> 
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=12
-##SBATCH --gres=gpu:2
-##SBATCH --partition=m2-vis-c6
-#SBATCH --time=24:00:00
-##SBATCH --mem=48000
+#SBATCH --job-name=vis_desktop
 env | grep SLURM
-echo " Starting MASSIVE desktop..."
+echo " Starting CSD3 desktop..."
 echo " Setting up the system environment..."
 # This is required for tcsh desktops to work
 source /etc/profile.d/modules.sh
 module purge
-#module load massive
 module load slurm
 module load turbovnc
 module list
@@ -22,28 +14,8 @@ rm /tmp/.X1-lock
 echo " Starting VNC..."
 vncserver :1 -otp -novncauth
 vncserver -list
-# note: shutdown in system epilog with
-# pkill -u $USER Xvnc
 
-#echo " Starting XServer on the following nodes..."
-#srun --ntasks $SLURM_NNODES --ntasks-per-node=1 hostname
-
-# 04/2015 - this does not allow desktops to use srun for GPUs (--gres=gpu:0 required to remove GPU resoutce)
-#   srun --task-epilog=/usr/local/desktop/sbatch_vis_epilog --ntasks $SLURM_NNODES --ntasks-per-node=1 xinit /usr/bin/xterm &
-# 01/05/2015 - this does not work with cgroups enabled
-# srun --overcommit --share --task-epilog=/usr/local/desktop/sbatch_vis_epilog --ntasks $SLURM_NNODES --ntasks-per-node=1 --gres=gpu:0 xinit /usr/bin/xterm &
-# note: vncserver -kill :1 in system epilog but also fails with cgroups and multiple nodes
-# mpirun --pernode xinit /usr/bin/xterm &
-# best to avoid mpirun/srun all together
-# TODO: 06/05/2015 - this still does not work for getting xserver on remote nodes! 
-#echo " Starting Xservers on nodes $SLURM_JOB_NODELIST..."
-#for node in $(scontrol show hostname $SLURM_JOB_NODELIST);
-#do
-    # Run with -f so Xservers stay running on nodes
-#    echo "ssh -f $node \"xinit /usr/bin/xterm\""
-#    ssh -f $node "xinit /usr/bin/xterm"
-#done
-# wait for things to die
+#Wait for things to die
 while true;
 do
     sleep 30;
