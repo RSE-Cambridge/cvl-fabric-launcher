@@ -9,19 +9,23 @@ from subprocess import call
 
 
 def listAll(args):
-    """Lists all the running jobs from a user. 
-    (This should target the vis_ pertition) """
+    """Lists all the running jobs from a user.
+    (This should target the vis_ pertition)"""
 
     partition = args.partition
     username = os.path.expandvars('$USER')
     total_seconds = 0
-    cmd = ["/usr/local/software/slurm/current/bin/squeue", "--user=" + username, "--partition=" + partition, "-o", "%i %L"]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = ["/usr/local/software/slurm/current/bin/squeue",
+           "--user=" + username,
+           "--partition=" + partition, "-o", "%i %L"]
+
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
-        if not 'JOBID TIME_LEFT' in line:
+        if 'JOBID TIME_LEFT' not in line:
             jobidstring = line.split(' ')[0]
             timestring = line.replace("-", ":").split(' ')[1]
-           if len(timestring) >= 10:
+            if len(timestring) >= 10:
                 pt = datetime.datetime.strptime(timestring, '%d:%H:%M:%S\n')
                 total_seconds = pt.second + pt.minute * 60 + pt.hour * 3600 + pt.day * 86400
             elif len(timestring) >= 7:
@@ -44,20 +48,27 @@ def newSession(args):
     qos = ""
     vncdir = os.path.expandvars('$HOME/.vnc/')
     cmd = ["mkdir", "-p", vncdir]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     (stdout, stderr) = p.communicate()
-    # set resolution if requested (Note - there is not error checking at the moment!)
+    # set resolution if requested
+    # (Note - there is not error checking at the moment!)
     turbovncserver_conf = os.path.expandvars('$HOME/.vnc/turbovncserver.conf')
     if args.resolution:
         # copy template to users home dir
-        cmd = ["cp", "-f", "/usr/local/desktop/turbovncserver.conf", turbovncserver_conf]
-        p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        cmd = ["cp", "-f",
+               "/usr/local/desktop/turbovncserver.conf", turbovncserver_conf]
+        p = subprocess.Popen(cmd, shell=False,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for line in p.stdout.readlines():
             print line
         retval = p.wait()
         # update screen resolution
-        cmd = ["sed", "-i", "s/VISMANAGERgeometry/$geometry = \"" + args.resolution + "\"/", turbovncserver_conf]
-        p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        cmd = ["sed", "-i",
+               "s/VISMANAGERgeometry/$geometry = \"" + args.resolution + "\"/",
+               turbovncserver_conf]
+        p = subprocess.Popen(cmd, shell=False,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for line in p.stdout.readlines():
             print line
         retval = p.wait()
@@ -66,13 +77,15 @@ def newSession(args):
         print "INFO: You have requested more than one vis node. This should only be used rarely for parallel vis jobs e.g. ParaView and XLI Workflow. Applications like MATLAB will not run faster with more nodes and you may prevent others using desktop sessions "
 
     # TODO: things that will help the user
-    #       - if system reserved for outage adjust walltime if too long and inform user
+    #       - if system reserved for outage adjust
+    #          walltime if too long and inform user
     #       - if high mem busy suggest low mem
     #       = warning if not enough allocation or low allcoation
     #       - warning if overquota
 
     # start session
-    # check if user has a custom sbatch_vis_session script (used for reservations etc)
+    # check if user has a custom sbatch_vis_session script
+    #    (used for reservations etc)
     if os.path.isfile(os.path.expandvars('$HOME/.vnc/sbatch_vis_session')):
         sbatch_vis_session = os.path.expandvars('$HOME/.vnc/sbatch_vis_session')
     else:
@@ -82,18 +95,25 @@ def newSession(args):
 
     # set up the cmmand based on flavour requested
     if args.flavour == "any":
-        cmd = ["/usr/local/software/slurm/current/bin/sbatch", "--reservation=skylake-test", "--partition=" + partition,
-               "--account=" + args.project, \
-               "--time=" + str(args.hours) + ":00:00", "--nodes=" + str(args.nodes), \
-               "--output=" + slurm_out, "--error=" + slurm_out, sbatch_vis_session]
+        cmd = ["/usr/local/software/slurm/current/bin/sbatch",
+               "--reservation=skylake-test", "--partition=" + partition,
+               "--account=" + args.project,
+               "--time=" + str(args.hours) + ":00:00",
+               "--nodes=" + str(args.nodes),
+               "--output=" + slurm_out, "--error=" + slurm_out,
+               sbatch_vis_session]
     elif args.flavour == "highmem":
-        cmd = ["/usr/local/software/slurm/current/bin/sbatch", "--qos=" + qos, "--partition=" + partition,
-               "--account=" + args.project, \
-               "--time=" + str(args.hours) + ":00:00", "--nodes=" + str(args.nodes), \
-               "--output=" + slurm_out, "--error=" + slurm_out, "--mem=192000", sbatch_vis_session]
+        cmd = ["/usr/local/software/slurm/current/bin/sbatch",
+               "--qos=" + qos, "--partition=" + partition,
+               "--account=" + args.project,
+               "--time=" + str(args.hours) + ":00:00",
+               "--nodes=" + str(args.nodes),
+               "--output=" + slurm_out, "--error=" + slurm_out, "--mem=192000",
+               sbatch_vis_session]
 
     print cmd
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         if 'Submitted batch job' in line:
             print line.split(' ')[3],
@@ -105,8 +125,10 @@ def newSession(args):
 def isRunning(args):
     """Check if the vis session is running"""
 
-    cmd = ["/usr/local/software/slurm/current/bin/squeue", "-j", args.sessionid, "-o", "%i %t %R"]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = ["/usr/local/software/slurm/current/bin/squeue",
+           "-j", args.sessionid, "-o", "%i %t %R"]
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         if 'JOBID' in line:
             continue
@@ -129,15 +151,15 @@ def isRunning(args):
 def execHost(args):
     """ Return the host name of the node to run the vis session"""
 
-    cmd = ["/usr/local/software/slurm/current/bin/squeue", "-j" + args.sessionid, "-o", "%N"]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = ["/usr/local/software/slurm/current/bin/squeue",
+           "-j" + args.sessionid, "-o", "%N"]
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         if 'NODELIST' in line:
             continue
         nodelist = line.translate(None, '[]')
-	print nodelist
-        #firstnode = re.split(r'-|,', nodelist)[0]
-        #print firstnode
+    print nodelist
     retval = p.wait()
 
 
@@ -145,7 +167,8 @@ def vncPort(args):
     slurm_out_dir = os.path.expandvars('$HOME/.vnc/')
     slurm_out = slurm_out_dir + "slurm-" + args.sessionid + ".out"
     cmd = ["grep", "-o", "^:[^\S]", slurm_out]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         print line,
     retval = p.wait()
@@ -153,7 +176,8 @@ def vncPort(args):
 
 def stopsession(args):
     cmd = ["/usr/local/software/slurm/current/bin/scancel", args.sessionid]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     if args.wait:
         time.sleep(args.wait)
     for line in p.stdout.readlines():
@@ -163,8 +187,10 @@ def stopsession(args):
 
 def getProjects(args):
     userid = os.path.expandvars('$USER')
-    cmd = ["/usr/local/software/slurm/current/bin/sshare", "--parsable", "--users=" + userid]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = ["/usr/local/software/slurm/current/bin/sshare",
+           "--parsable", "--users=" + userid]
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         user = line.split('|')[1]
         if userid.lower() == user:
@@ -177,8 +203,10 @@ def getProjects(args):
 
 
 def showStart(args):
-    cmd = ["/usr/local/software/slurm/current/bin/scontrol", "show", "job", args.sessionid]
-    p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    cmd = ["/usr/local/software/slurm/current/bin/scontrol",
+           "show", "job", args.sessionid]
+    p = subprocess.Popen(cmd, shell=False,
+                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         if 'StartTime' in line:
             if 'StartTime=Unknown' in line:
@@ -193,6 +221,7 @@ def showStart(args):
 
 def sanityCheck(args):
     print "Running with launcher version: " + args.launcherversion
+
 
 def main():
     import argparse
@@ -253,7 +282,7 @@ def main():
         args = parser.parse_args(['--help'])
     else:
         args = parser.parse_args()
-    if args.func == None:
+    if args.func is None:
         sanityCheck(args)
     else:
         args.func(args)
